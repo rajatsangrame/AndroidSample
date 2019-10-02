@@ -1,65 +1,80 @@
 package com.example.test;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentResolver;
-import android.database.Cursor;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
-
-import java.util.ArrayList;
+import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private MainActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //region ViewModel & LiveData Demo
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+
+        Observer<String> observer = new Observer<String>() {
+            @Override
+            public void onChanged(String value) {
+
+                TextView tv = findViewById(R.id.textView);
+                String newValue = getString(R.string.edit_text_value, value);
+                tv.setText(newValue);
+            }
+        };
+
+        mViewModel.getTxtViewValue().observe(this, observer);
+        //endregion
+
+        // Life Cycle & Observer
+        new MyLocationManager(this, this, mListener);
 
     }
 
     public void onClick(View view) {
 
-        ArrayList<String> list = getAllContacts();
-
-        Log.i(TAG, "onClick: " + list.size());
+        //region ViewModel & LiveData Demo
+        EditText et = findViewById(R.id.editText);
+        mViewModel.setTxtViewValue(et.getText().toString());
+        //endregion
     }
 
-    private ArrayList<String> getAllContacts() {
-        ArrayList<String> nameList = new ArrayList<>();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur != null && cur.moveToNext()) {
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-                nameList.add(name);
-                if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    }
-                    pCur.close();
-                }
-            }
+    private LocationListener mListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+
+            String newValue = getString(R.string.location__value,
+                    location.getLatitude() + ", " + location.getLatitude());
+
+            ((TextView) findViewById(R.id.location))
+                    .setText(newValue);
+
         }
 
-        if (cur != null) {
-            cur.close();
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
         }
-        return nameList;
-    }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
 }
