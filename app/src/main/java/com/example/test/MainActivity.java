@@ -2,79 +2,63 @@ package com.example.test;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import android.location.Location;
-import android.location.LocationListener;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private MainActivityViewModel mViewModel;
+    private UserViewModel mUserViewModel;
+    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //region ViewModel & LiveData Demo
-        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        Observer<String> observer = new Observer<String>() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        final UserListAdapter adapter = new UserListAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mUserViewModel.getAllUsers().observe(this, new Observer<List<User>>() {
             @Override
-            public void onChanged(String value) {
-
-                TextView tv = findViewById(R.id.textView);
-                String newValue = getString(R.string.edit_text_value, value);
-                tv.setText(newValue);
+            public void onChanged(List<User> users) {
+                adapter.setUser(users);
             }
-        };
+        });
+    }
 
-        mViewModel.getTxtViewValue().observe(this, observer);
-        //endregion
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        // Life Cycle & Observer
-        new MyLocationManager(this, this, mListener);
-
+        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            String userInfo = data.getStringExtra(NewUserActivity.EXTRA_REPLY);
+            User user = new Gson().fromJson(userInfo, User.class);
+            mUserViewModel.insert(user);
+        } else {
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Not Saved",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onClick(View view) {
-
-        //region ViewModel & LiveData Demo
-        EditText et = findViewById(R.id.editText);
-        mViewModel.setTxtViewValue(et.getText().toString());
-        //endregion
+        Intent intent = new Intent(MainActivity.this, NewUserActivity.class);
+        startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
     }
-
-    private LocationListener mListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-
-            String newValue = getString(R.string.location__value,
-                    location.getLatitude() + ", " + location.getLatitude());
-
-            ((TextView) findViewById(R.id.location))
-                    .setText(newValue);
-
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
 }
