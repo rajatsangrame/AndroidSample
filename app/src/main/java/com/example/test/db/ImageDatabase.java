@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.db;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,20 +9,26 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {User.class}, version = 1)
-public abstract class UserRoomDatabase extends RoomDatabase {
+/**
+ * Created by Rajat Sangrame on 13/10/19.
+ * http://github.com/rajatsangrame
+ */
 
-    public abstract UserDao userDao();
+@Database(entities = {Image.class}, version = 1)
+public abstract class ImageDatabase extends RoomDatabase {
 
-    private static volatile UserRoomDatabase INSTANCE;
+    public abstract ImageDao imageDao();
 
-    static UserRoomDatabase getDatabase(final Context context) {
+    private static volatile ImageDatabase INSTANCE;
+
+
+    static ImageDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (UserRoomDatabase.class) {
+            synchronized (ImageDatabase.class) {
                 if (INSTANCE == null) {
                     // Create database here
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            UserRoomDatabase.class, "user_database")
+                            ImageDatabase.class, "user_database")
                             .fallbackToDestructiveMigration()
                             .addCallback(mRoomDatabaseCallback)
                             .build();
@@ -38,16 +44,17 @@ public abstract class UserRoomDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    new PopulateDbAsync(INSTANCE).execute();
+                    //new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
+
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final UserDao mDao;
+        private final ImageDao mDao;
 
-        PopulateDbAsync(UserRoomDatabase db) {
-            mDao = db.userDao();
+        PopulateDbAsync(ImageDatabase db) {
+            mDao = db.imageDao();
         }
 
         @Override
@@ -56,4 +63,5 @@ public abstract class UserRoomDatabase extends RoomDatabase {
             return null;
         }
     }
+
 }
