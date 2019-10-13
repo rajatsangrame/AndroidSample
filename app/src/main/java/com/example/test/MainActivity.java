@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i(TAG, "onChanged: Size " + images.size());
 
+                if (images.isEmpty()){
+                    resetImages();
+                }
+
                 for (Image image : images) {
 
                     Bitmap bmp = BitmapFactory.decodeFile(image.getImage());
@@ -99,14 +103,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                resetImages();
                 showWorkInProgress();
 
                 /* Onetime Request*/
                 mainActivityViewModel.processWork(getMode());
 
-                /* Periodic Request*/
-                //mainActivityViewModel.processPeriodicWork();
             }
         });
 
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Periodic Request*/
                 mainActivityViewModel.processPeriodicWork();
+
+                Toast.makeText(MainActivity.this, "Process Start", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -137,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (repository.getAllImages() != null) {
                 repository.deleteAll();
-                resetImages();
-
                 Toast.makeText(this, "DB Cleared", Toast.LENGTH_SHORT).show();
             }
         }
