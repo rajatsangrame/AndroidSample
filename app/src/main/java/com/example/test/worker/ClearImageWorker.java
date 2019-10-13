@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ClearImageWorker extends Worker {
 
-    private static final String TAG = "CatWorker";
+    private static final String TAG = "ClearImageWorker";
 
     public ClearImageWorker(@NonNull Context context,
                             @NonNull WorkerParameters workerParams) {

@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mImageDog;
     private ImageView mImageCat;
-    private Button mButtonProcess , mButtonCancel;
+    private Button mButtonProcess, mButtonCancel;
     private ProgressBar mProgressBar;
     private MyViewModel mainActivityViewModel;
     private static final String TAG = "MainActivity";
@@ -98,9 +98,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                resetImages();
                 showWorkInProgress();
+
+                /* Onetime Request*/
                 mainActivityViewModel.processWork(getMode());
 
+                /* Periodic Request*/
+                //mainActivityViewModel.processPeriodicWork();
             }
         });
 
@@ -121,16 +126,20 @@ public class MainActivity extends AppCompatActivity {
             ImageRepository repository = mainActivityViewModel.getImageRepository();
 
             if (repository.getAllImages() != null) {
-
                 repository.deleteAll();
-                mImageDog.setImageBitmap(null);
-                mImageCat.setImageBitmap(null);
+                resetImages();
 
                 Toast.makeText(this, "DB Cleared", Toast.LENGTH_SHORT).show();
             }
         }
         return true;
 
+    }
+
+    private void resetImages() {
+
+        mImageDog.setImageBitmap(null);
+        mImageCat.setImageBitmap(null);
     }
 
     @Override

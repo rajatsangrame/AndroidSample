@@ -10,6 +10,7 @@ import androidx.work.Constraints;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkContinuation;
 import androidx.work.WorkManager;
 
@@ -20,6 +21,7 @@ import com.example.test.worker.ClearImageWorker;
 import com.example.test.worker.DogWorker;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.test.Constants.CAT_TAG;
 import static com.example.test.Constants.CLEAR_IMAGE_TAG;
@@ -42,6 +44,25 @@ public class MyViewModel extends AndroidViewModel {
         mWorkManager = WorkManager.getInstance(application);
         mImageRepository = new ImageRepository(application);
         mAllImage = mImageRepository.getAllImages();
+    }
+
+    public void processPeriodicWork() {
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        PeriodicWorkRequest catDog = new PeriodicWorkRequest.Builder(
+                ClearImageWorker.class,
+                30, TimeUnit.MINUTES,
+                15, TimeUnit.MINUTES)
+                .addTag(CLEAR_IMAGE_TAG)
+                .setConstraints(constraints)
+                .build();
+
+
+        mWorkManager.enqueue(catDog);
     }
 
     public void processWork(int method) {
