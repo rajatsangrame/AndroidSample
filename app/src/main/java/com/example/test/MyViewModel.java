@@ -4,6 +4,7 @@ import android.app.Application;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.work.Constraints;
@@ -46,6 +47,7 @@ public class MyViewModel extends AndroidViewModel {
         mAllImage = mImageRepository.getAllImages();
     }
 
+    @WorkerThread
     public void processPeriodicWork() {
 
         Constraints constraints = new Constraints.Builder()
@@ -65,6 +67,7 @@ public class MyViewModel extends AndroidViewModel {
         mWorkManager.enqueue(catDog);
     }
 
+    @WorkerThread
     public void processWork(int method) {
 
         // Create Charging & Network constraint

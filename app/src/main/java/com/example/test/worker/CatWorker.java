@@ -58,6 +58,7 @@ public class CatWorker extends Worker {
             }
 
         } catch (ExecutionException | InterruptedException | FileNotFoundException e) {
+
             Log.i(TAG, "doWork: " + e.getLocalizedMessage());
         }
 

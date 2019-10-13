@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mImageDog;
     private ImageView mImageCat;
-    private Button mButtonProcess, mButtonCancel;
+    private Button mButtonProcess, mButtonCancel, mButtonPeriodicDelete;
     private ProgressBar mProgressBar;
     private MyViewModel mainActivityViewModel;
     private static final String TAG = "MainActivity";
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mImageCat = findViewById(R.id.img_cat);
         mButtonProcess = findViewById(R.id.btn_process);
         mButtonCancel = findViewById(R.id.btn_cancel);
+        mButtonPeriodicDelete = findViewById(R.id.btn_periodic_delete);
         mProgressBar = findViewById(R.id.progress);
 
         mainActivityViewModel.getAllImage().observe(this, new Observer<List<Image>>() {
@@ -106,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
 
                 /* Periodic Request*/
                 //mainActivityViewModel.processPeriodicWork();
+            }
+        });
+
+        mButtonPeriodicDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* Periodic Request*/
+                mainActivityViewModel.processPeriodicWork();
             }
         });
 
@@ -152,12 +162,12 @@ public class MainActivity extends AppCompatActivity {
     private void showWorkInProgress() {
         mProgressBar.setVisibility(View.VISIBLE);
         mButtonCancel.setVisibility(View.VISIBLE);
-        mButtonProcess.setVisibility(View.GONE);
+        mButtonProcess.setVisibility(View.INVISIBLE);
     }
 
     private void showWorkFinished() {
-        mProgressBar.setVisibility(View.GONE);
-        mButtonCancel.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mButtonCancel.setVisibility(View.INVISIBLE);
         mButtonProcess.setVisibility(View.VISIBLE);
     }
 

@@ -57,10 +57,8 @@ public class DogWorker extends Worker {
             }
 
         } catch (ExecutionException | InterruptedException | FileNotFoundException e) {
-            e.printStackTrace();
 
             Log.i(TAG, "doWork: " + e.getLocalizedMessage());
-
         }
 
         return Result.failure();

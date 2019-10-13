@@ -59,6 +59,7 @@ public class ClearImageWorker extends Worker {
             }
 
             return Result.success();
+
         } catch (Exception exception) {
             Log.e(TAG, "Error cleaning up", exception);
             return Result.failure();
