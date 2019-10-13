@@ -18,15 +18,16 @@ public class Image extends Room {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private byte[] image;
+    @NonNull
+    @ColumnInfo(name = "image")
+    private String image;
 
     @NonNull
     @ColumnInfo(name = "animal")
     private String animal;
 
 
-    public Image(@NonNull String animal,@NonNull byte[] image) {
+    public Image(@NonNull String animal, @NonNull String image) {
         this.animal = animal;
         this.image = image;
     }
@@ -39,11 +40,11 @@ public class Image extends Room {
         this.id = id;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

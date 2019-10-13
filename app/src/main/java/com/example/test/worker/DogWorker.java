@@ -2,6 +2,8 @@ package com.example.test.worker;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -13,6 +15,8 @@ import com.example.test.db.Image;
 import com.example.test.db.ImageRepository;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -20,6 +24,8 @@ import java.util.concurrent.ExecutionException;
  * http://github.com/rajatsangrame
  */
 public class DogWorker extends Worker {
+
+    private static final String TAG = "DogWorker";
 
     public DogWorker(@NonNull Context context,
                      @NonNull WorkerParameters workerParams) {
@@ -42,19 +48,22 @@ public class DogWorker extends Worker {
                     .submit()
                     .get();
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream);
-            byte[] image = stream.toByteArray();
-            imageRepository.insert(new Image("dog", image));
-            bitmap.recycle();
+            File output = WorkerUtil.writeBitmapToFile(context, bitmap);
 
-            return Result.success();
+            if (output.exists()) {
 
-        } catch (ExecutionException | InterruptedException e) {
+                imageRepository.insert(new Image("dog", output.getAbsolutePath()));
+                return Result.success();
+            }
+
+        } catch (ExecutionException | InterruptedException | FileNotFoundException e) {
             e.printStackTrace();
-            return Result.failure();
+
+            Log.i(TAG, "doWork: " + e.getLocalizedMessage());
 
         }
+
+        return Result.failure();
 
     }
 }

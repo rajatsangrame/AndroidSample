@@ -16,11 +16,13 @@ import androidx.work.WorkManager;
 import com.example.test.db.Image;
 import com.example.test.db.ImageRepository;
 import com.example.test.worker.CatWorker;
+import com.example.test.worker.ClearImageWorker;
 import com.example.test.worker.DogWorker;
 
 import java.util.List;
 
 import static com.example.test.Constants.CAT_TAG;
+import static com.example.test.Constants.CLEAR_IMAGE_TAG;
 import static com.example.test.Constants.DOG_TAG;
 import static com.example.test.Constants.DOWNLOAD_WORK_NAME;
 
@@ -44,10 +46,16 @@ public class MyViewModel extends AndroidViewModel {
 
     public void processWork(int method) {
 
-        // Create charging constraint
+        // Create Charging & Network constraint
         Constraints constraints = new Constraints.Builder()
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // Create Work Request for Clear Image
+        OneTimeWorkRequest clearImage = new OneTimeWorkRequest.Builder(ClearImageWorker.class)
+                .setConstraints(constraints)
+                .addTag(CLEAR_IMAGE_TAG)
                 .build();
 
         // Create Work Request for Dog Image
@@ -66,7 +74,9 @@ public class MyViewModel extends AndroidViewModel {
         WorkContinuation continuation = mWorkManager
                 .beginUniqueWork(DOWNLOAD_WORK_NAME,
                         ExistingWorkPolicy.REPLACE,
-                        dog);
+                        clearImage);
+
+        continuation = continuation.then(dog);
 
         if (method == Constants.CAT_AND_DOG) {
             continuation = continuation.then(cat);

@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ import com.example.test.db.Image;
 import com.example.test.db.ImageDao;
 import com.example.test.db.ImageRepository;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -29,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mImageDog;
     private ImageView mImageCat;
-    private Button mButtonProcess;
+    private Button mButtonProcess , mButtonCancel;
+    private ProgressBar mProgressBar;
     private MyViewModel mainActivityViewModel;
     private static final String TAG = "MainActivity";
 
@@ -62,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mImageDog = findViewById(R.id.img_dog);
         mImageCat = findViewById(R.id.img_cat);
         mButtonProcess = findViewById(R.id.btn_process);
+        mButtonCancel = findViewById(R.id.btn_cancel);
+        mProgressBar = findViewById(R.id.progress);
 
         mainActivityViewModel.getAllImage().observe(this, new Observer<List<Image>>() {
             @Override
@@ -71,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (Image image : images) {
 
-                    Bitmap bmp = BitmapFactory.decodeByteArray(image.getImage(), 0,
-                            image.getImage().length);
+                    Bitmap bmp = BitmapFactory.decodeFile(image.getImage());
 
                     if (image.getAnimal().equals("cat")) {
 
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
+
+                showWorkFinished();
             }
         });
 
@@ -90,8 +98,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                showWorkInProgress();
                 mainActivityViewModel.processWork(getMode());
 
+            }
+        });
+
+        mButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mainActivityViewModel.cancelWork();
             }
         });
     }
@@ -121,6 +138,18 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    private void showWorkInProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mButtonCancel.setVisibility(View.VISIBLE);
+        mButtonProcess.setVisibility(View.GONE);
+    }
+
+    private void showWorkFinished() {
+        mProgressBar.setVisibility(View.GONE);
+        mButtonCancel.setVisibility(View.GONE);
+        mButtonProcess.setVisibility(View.VISIBLE);
     }
 
 
