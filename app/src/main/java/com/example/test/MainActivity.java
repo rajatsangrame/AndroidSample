@@ -1,40 +1,42 @@
 package com.example.test;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+
+import com.example.test.databinding.ActivityMainBinding;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private MainActivityViewModel mViewModel;
+    private ActivityMainBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         //region ViewModel & LiveData Demo
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        mBinding.setViewmodel(mViewModel);
 
-        Observer<String> observer = new Observer<String>() {
+        mViewModel.getTxtViewValue().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String value) {
 
-                TextView tv = findViewById(R.id.textView);
                 String newValue = getString(R.string.edit_text_value, value);
-                tv.setText(newValue);
+                mBinding.textView.setText(newValue);
             }
-        };
-
-        mViewModel.getTxtViewValue().observe(this, observer);
+        });
         //endregion
 
         // Life Cycle & Observer
@@ -55,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
 
             String newValue = getString(R.string.location__value,
-                    location.getLatitude() + ", " + location.getLatitude());
-
-            ((TextView) findViewById(R.id.location))
-                    .setText(newValue);
+                    location.getLatitude() + ", " + location.getLongitude());
+            mViewModel.setTxtViewValue(newValue);
+            mViewModel.lat.set(location.getLatitude() + "");
 
         }
 
