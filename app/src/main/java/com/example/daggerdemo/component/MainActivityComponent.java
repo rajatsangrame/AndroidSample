@@ -1,5 +1,6 @@
 package com.example.daggerdemo.component;
 
+import com.example.daggerdemo.MainActivity;
 import com.example.daggerdemo.adapter.RandomUserAdapter;
 import com.example.daggerdemo.interfaces.MainActivityScope;
 import com.example.daggerdemo.interfaces.RandomUsersApi;
@@ -15,8 +16,6 @@ import dagger.Component;
 @MainActivityScope
 public interface MainActivityComponent {
 
-    RandomUserAdapter getRandomUserAdapter();
-
-    RandomUsersApi getRandomUserService();
+    void injectMainActivity(MainActivity mainActivity);
 
 }
