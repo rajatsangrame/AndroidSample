@@ -15,7 +15,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "ApiKey", ApiKey)
         }
+        debug{
+            buildConfigField("String", "ApiKey", ApiKey)
+        }
+    }
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -27,14 +34,23 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
-    //annotationProcessor 'com.google.dagger:dagger-implementationr:2.13'
-    //implementation 'com.google.dagger:dagger:2.13'
-
+    // Dagger
     implementation 'com.google.dagger:dagger-android:2.20'
     implementation 'com.google.dagger:dagger-android-support:2.20' // if you use the support libraries
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.20'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.20'
 
+    // Room
+    implementation "androidx.room:room-runtime:$rootProject.room_version"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.room_version"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.room_version"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.arch_lifecycle_version"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$rootProject.arch_lifecycle_version"
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$rootProject.glide_version"
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
