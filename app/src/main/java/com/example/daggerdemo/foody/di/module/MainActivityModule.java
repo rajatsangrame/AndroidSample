@@ -12,7 +12,7 @@ import dagger.Provides;
  * http://github.com/rajatsangrame
  */
 @Module()
-public class  MainActivityModule {
+public class MainActivityModule {
 
     private final MainActivity mainActivity;
 

@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Rajat Sangrame on 12/5/20.
  * http://github.com/rajatsangrame
  */
-@Module(includes = {OkHttpClientModule.class})
+@Module(includes = {ViewModelModule.class, OkHttpClientModule.class})
 public class ApplicationModule {
 
     public static final String BASE_URL = "https://developers.zomato.com/api/v2.1/";

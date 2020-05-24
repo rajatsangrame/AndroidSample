@@ -6,6 +6,7 @@ import com.example.daggerdemo.foody.di.module.RestaurantRepository;
 import com.example.daggerdemo.foody.di.scope.FoodyApplicationScope;
 import com.example.daggerdemo.foody.di.module.ApplicationModule;
 import com.example.daggerdemo.foody.di.module.GlideModule;
+import com.example.daggerdemo.foody.util.ViewModelFactory;
 
 import dagger.Component;
 
@@ -22,4 +23,7 @@ public interface FoodyComponent {
     RestaurantRepository getRepository();
 
     Glide getGlide(); // For custom glide
+
+    ViewModelFactory getViewModelFactory();
+
 }

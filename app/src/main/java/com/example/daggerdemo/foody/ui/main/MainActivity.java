@@ -16,6 +16,7 @@ import com.example.daggerdemo.foody.di.component.MainActivityComponent;
 import com.example.daggerdemo.foody.di.module.MainActivityModule;
 import com.example.daggerdemo.foody.di.module.RestaurantRepository;
 import com.example.daggerdemo.foody.data.model.RestaurantsItem;
+import com.example.daggerdemo.foody.util.ViewModelFactory;
 
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     RestaurantRepository restaurantRepository;
 
     @Inject
+    ViewModelFactory factory;
+
     RestaurantViewModel restaurantViewModel;
 
     @Override
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        //restaurantViewModel = new ViewModelProvider(this).get(RestaurantViewModel.class);
+        restaurantViewModel = new ViewModelProvider(this, factory).get(RestaurantViewModel.class);
 
         restaurantViewModel.getAllRestaurants().observe(this, new Observer<List<RestaurantsItem>>() {
             @Override
