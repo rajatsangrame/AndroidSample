@@ -2,7 +2,7 @@ package com.example.daggerdemo.foody.di.module;
 
 import android.content.Context;
 
-import com.example.daggerdemo.foody.di.scope.FoodyAppContext;
+import com.example.daggerdemo.foody.di.scope.FoodyApplicationContext;
 import com.example.daggerdemo.foody.di.scope.FoodyApplicationScope;
 
 import dagger.Module;
@@ -21,7 +21,7 @@ public class ContextModule {
         this.context = context;
     }
 
-    @FoodyAppContext
+    @FoodyApplicationContext
     @FoodyApplicationScope
     @Provides
     public Context context() {

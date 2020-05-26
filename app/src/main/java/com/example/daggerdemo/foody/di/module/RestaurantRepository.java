@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.daggerdemo.foody.data.rest.RetrofitApi;
-import com.example.daggerdemo.foody.di.scope.FoodyAppContext;
+import com.example.daggerdemo.foody.di.scope.FoodyApplicationContext;
 import com.example.daggerdemo.foody.data.model.ApiResponse;
 import com.example.daggerdemo.foody.data.model.RestaurantsItem;
 
@@ -25,7 +25,7 @@ public class RestaurantRepository {
     RetrofitApi retrofitApi;
     MutableLiveData<List<RestaurantsItem>> restaurantsItems;
 
-    public RestaurantRepository(@FoodyAppContext Context context, RetrofitApi retrofitApi) {
+    public RestaurantRepository(@FoodyApplicationContext Context context, RetrofitApi retrofitApi) {
         this.retrofitApi = retrofitApi;
         restaurantsItems = new MutableLiveData<>();
         fetchData();

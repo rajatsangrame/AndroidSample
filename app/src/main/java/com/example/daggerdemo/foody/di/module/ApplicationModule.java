@@ -3,7 +3,7 @@ package com.example.daggerdemo.foody.di.module;
 import android.content.Context;
 
 import com.example.daggerdemo.foody.data.rest.RetrofitApi;
-import com.example.daggerdemo.foody.di.scope.FoodyAppContext;
+import com.example.daggerdemo.foody.di.scope.FoodyApplicationContext;
 import com.example.daggerdemo.foody.di.scope.FoodyApplicationScope;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,7 +52,7 @@ public class ApplicationModule {
 
     @FoodyApplicationScope
     @Provides
-    RestaurantRepository getRepository(@FoodyAppContext Context context, RetrofitApi retrofitApi) {
+    RestaurantRepository getRepository(@FoodyApplicationContext Context context, RetrofitApi retrofitApi) {
         return new RestaurantRepository(context, retrofitApi);
     }
 

@@ -3,7 +3,7 @@ package com.example.daggerdemo.foody.di.module;
 import android.content.Context;
 
 import com.example.daggerdemo.BuildConfig;
-import com.example.daggerdemo.foody.di.scope.FoodyAppContext;
+import com.example.daggerdemo.foody.di.scope.FoodyApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class OkHttpClientModule {
     }
 
     @Provides
-    public File file(@FoodyAppContext Context context) {
+    public File file(@FoodyApplicationContext Context context) {
         File file = new File(context.getCacheDir(), "HttpCache");
         file.mkdirs();
         return file;

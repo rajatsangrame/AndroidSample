@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.module.AppGlideModule;
-import com.example.daggerdemo.foody.di.scope.FoodyAppContext;
+import com.example.daggerdemo.foody.di.scope.FoodyApplicationContext;
 import com.example.daggerdemo.foody.di.scope.FoodyApplicationScope;
 
 import dagger.Module;
@@ -22,7 +22,7 @@ public class GlideModule extends AppGlideModule {
 
     @FoodyApplicationScope
     @Provides
-    public Glide getGlide(@FoodyAppContext Context context) {
+    public Glide getGlide(@FoodyApplicationContext Context context) {
         return Glide.get(context);
     }
 

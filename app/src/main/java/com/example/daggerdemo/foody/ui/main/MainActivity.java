@@ -22,19 +22,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 public class MainActivity extends AppCompatActivity {
 
     @Inject
     RestaurantAdapter adapter;
-
     @Inject
     RestaurantRepository restaurantRepository;
-
     @Inject
     ViewModelFactory factory;
-
-    RestaurantViewModel restaurantViewModel;
+    private RestaurantViewModel restaurantViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         restaurantViewModel = new ViewModelProvider(this, factory).get(RestaurantViewModel.class);
-
         restaurantViewModel.getAllRestaurants().observe(this, new Observer<List<RestaurantsItem>>() {
             @Override
             public void onChanged(List<RestaurantsItem> restaurantsItems) {
