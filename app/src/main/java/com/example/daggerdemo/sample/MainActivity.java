@@ -13,7 +13,9 @@ import com.example.daggerdemo.sample.component.DaggerMainActivityComponent;
 import com.example.daggerdemo.sample.component.MainActivityComponent;
 import com.example.daggerdemo.sample.interfaces.RandomUsersApi;
 import com.example.daggerdemo.sample.model.RandomUsers;
+import com.example.daggerdemo.sample.model.Result;
 import com.example.daggerdemo.sample.module.MainActivityModule;
+import com.example.daggerdemo.sample.util.Utils;
 
 
 import org.reactivestreams.Subscription;
@@ -31,6 +33,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +46,7 @@ import retrofit2.Response;
  * RxJava Part 1 & 2
  * Ref: https://medium.com/@kurtisnusbaum/rxandroid-basics-part-1-c0d5edcf6850
  * Ref: https://medium.com/@kurtisnusbaum/rxandroid-basics-part-2-6e877af352
+ * Ref: https://mindorks.com/course/learn-rxjava
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -89,27 +93,41 @@ public class MainActivity extends AppCompatActivity {
 
     void runAsynRxJava() {
 
-        Single<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUsers(1);
+        Observable<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUsers(1);
         randomUsersObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<RandomUsers>() {
+                .map(new Function<RandomUsers, List<Result>>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.i(TAG, "onSubscribe: ");
+                    public List<Result> apply(RandomUsers randomUsers) throws Exception {
+                        return Utils.getListResult(randomUsers);
                     }
+                })
+                .subscribe(getObserver());
+    }
 
-                    @Override
-                    public void onSuccess(RandomUsers randomUsers) {
-                        mAdapter.setItems(randomUsers.getResults());
-                        Log.i(TAG, "onSuccess: ");
-                    }
+    private Observer<List<Result>> getObserver() {
+        return new Observer<List<Result>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i(TAG, "onError: ");
-                    }
-                });
+            }
+
+            @Override
+            public void onNext(List<Result> results) {
+                mAdapter.setItems(results);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
     }
 
     void runBasicRxJava() {
