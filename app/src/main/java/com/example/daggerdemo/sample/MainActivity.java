@@ -31,9 +31,11 @@ import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
     RandomUsersApi randomUsersApi;
     @Inject
     RandomUserAdapter mAdapter;
+
+    private final CompositeDisposable disposables = new CompositeDisposable();
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        disposables.clear(); // do not send event after activity has been stopped
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,12 +135,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
     void runAsynRxJavaObservable() {
 
-        Observable<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUsers(1);
-        randomUsersObservable
-                .subscribeOn(Schedulers.io())
+        disposables.add(getObservable().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<RandomUsers, List<Result>>() {
                     @Override
@@ -138,7 +145,27 @@ public class MainActivity extends AppCompatActivity {
                         return Utils.getListResult(randomUsers);
                     }
                 })
-                .subscribe(getObserver());
+                .subscribeWith(new DisposableObserver<List<Result>>() {
+                    @Override
+                    public void onNext(List<Result> results) {
+
+                        mAdapter.setItems(results);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
+
+    private Observable<RandomUsers> getObservable() {
+        return randomUsersApi.getRandomUsers(1);
     }
 
     private Observer<List<Result>> getObserver() {
