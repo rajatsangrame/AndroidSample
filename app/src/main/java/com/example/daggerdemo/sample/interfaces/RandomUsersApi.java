@@ -3,6 +3,8 @@ package com.example.daggerdemo.sample.interfaces;
 
 import com.example.daggerdemo.sample.model.RandomUsers;
 
+import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -14,5 +16,5 @@ import retrofit2.http.Query;
 public interface RandomUsersApi {
 
     @GET("api")
-    Call<RandomUsers> getRandomUsers(@Query("results") int size);
+    Single<RandomUsers> getRandomUsers(@Query("results") int size);
 }

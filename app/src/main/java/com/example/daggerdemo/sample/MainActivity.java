@@ -15,14 +15,34 @@ import com.example.daggerdemo.sample.interfaces.RandomUsersApi;
 import com.example.daggerdemo.sample.model.RandomUsers;
 import com.example.daggerdemo.sample.module.MainActivityModule;
 
+
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
+ * Dagger
  * Ref: https://medium.com/@harivigneshjayapalan/dagger-2-for-android-beginners-advanced-part-ii-eb6f8d8a8926
+ * <p>
+ * RxJava Part 1 & 2
+ * Ref: https://medium.com/@kurtisnusbaum/rxandroid-basics-part-1-c0d5edcf6850
+ * Ref: https://medium.com/@kurtisnusbaum/rxandroid-basics-part-2-6e877af352
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         */
         //endregion
 
+        //region Zomato
         MainActivityComponent mainActivityComponent = DaggerMainActivityComponent.builder()
                 .mainActivityModule(new MainActivityModule(this))
                 .randomUserComponent(RandomUserApplication.get(this).getRandomUserApplicationComponent())
@@ -60,23 +81,74 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
+        //endregion
 
-        randomUsersApi.getRandomUsers(2).enqueue(new Callback<RandomUsers>() {
+        runAsynRxJava();
+    }
+
+
+    void runAsynRxJava() {
+
+        Single<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUsers(1);
+        randomUsersObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<RandomUsers>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "onSubscribe: ");
+                    }
+
+                    @Override
+                    public void onSuccess(RandomUsers randomUsers) {
+                        mAdapter.setItems(randomUsers.getResults());
+                        Log.i(TAG, "onSuccess: ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: ");
+                    }
+                });
+    }
+
+    void runBasicRxJava() {
+        Observable<List<String>> listObservable = Observable.just(getColorList());
+        listObservable.subscribe(new Observer<List<String>>() {
             @Override
-            public void onResponse(Call<RandomUsers> call, Response<RandomUsers> response) {
+            public void onSubscribe(Disposable d) {
 
-                Log.i(TAG, "onResponse: ");
-
-                if (response.body() != null) {
-                    mAdapter.setItems(response.body().getResults());
-                }
+                Log.i(TAG, "onSubscribe: " + d.isDisposed());
             }
 
             @Override
-            public void onFailure(Call<RandomUsers> call, Throwable t) {
+            public void onNext(List<String> strings) {
 
-                Log.i(TAG, "onFailure: " + t.getMessage());
+                Log.i(TAG, "onNext: " + strings.size());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                Log.i(TAG, "onError: ");
+            }
+
+            @Override
+            public void onComplete() {
+
+                Log.i(TAG, "onComplete: ");
             }
         });
     }
+
+    private static List<String> getColorList() {
+        ArrayList<String> colors = new ArrayList<>();
+        colors.add("blue");
+        colors.add("green");
+        colors.add("red");
+        colors.add("chartreuse");
+        colors.add("Van Dyke Brown");
+        return colors;
+    }
+
 }
