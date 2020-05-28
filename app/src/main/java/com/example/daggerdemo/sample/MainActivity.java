@@ -87,11 +87,46 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         //endregion
 
-        runAsynRxJava();
+        //region Rx
+        //runBasicRxJava();
+        //runAsynRxJavaSingle();
+        runAsynRxJavaObservable();
+        //endregion
+    }
+
+    private void runAsynRxJavaSingle() {
+
+        Single<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUser(1);
+        randomUsersObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<RandomUsers, List<Result>>() {
+                    @Override
+                    public List<Result> apply(RandomUsers randomUsers) throws Exception {
+                        return Utils.getListResult(randomUsers);
+                    }
+                })
+                .subscribe(new SingleObserver<List<Result>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(List<Result> results) {
+                        mAdapter.setItems(results);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
 
-    void runAsynRxJava() {
+    void runAsynRxJavaObservable() {
 
         Observable<RandomUsers> randomUsersObservable = randomUsersApi.getRandomUsers(1);
         randomUsersObservable
@@ -120,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(Throwable e) {
-
+                Log.i(TAG, "onError: ");
             }
 
             @Override
@@ -131,7 +166,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void runBasicRxJava() {
-        Observable<List<String>> listObservable = Observable.just(getColorList());
+
+        Observable<List<String>> listObservable = Observable.fromCallable(new Callable<List<String>>() {
+            @Override
+            public List<String> call() throws Exception {
+                return getColorList();
+            }
+        });
         listObservable.subscribe(new Observer<List<String>>() {
             @Override
             public void onSubscribe(Disposable d) {

@@ -17,4 +17,8 @@ public interface RandomUsersApi {
 
     @GET("api")
     Observable<RandomUsers> getRandomUsers(@Query("results") int size);
+
+    @GET("api")
+    Single<RandomUsers> getRandomUser(@Query("results") int size);
+
 }
