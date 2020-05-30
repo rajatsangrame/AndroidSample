@@ -1,10 +1,8 @@
 package com.example.daggerdemo.foody.di.module;
 
-import androidx.fragment.app.Fragment;
-
 import com.example.daggerdemo.foody.adapter.RestaurantAdapter;
 import com.example.daggerdemo.foody.di.scope.MainActivityScope;
-import com.example.daggerdemo.foody.ui.main.MainActivity;
+import com.example.daggerdemo.foody.ui.fragment.HomeFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,9 +14,9 @@ import dagger.Provides;
 @Module()
 public class HomeFragmentModule {
 
-    private final Fragment fragment;
+    private final HomeFragment fragment;
 
-    public HomeFragmentModule(Fragment fragment) {
+    public HomeFragmentModule(HomeFragment fragment) {
         this.fragment = fragment;
     }
 

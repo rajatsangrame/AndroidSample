@@ -19,7 +19,6 @@ import retrofit2.Response;
  * Created by Rajat Sangrame on 23/5/20.
  * http://github.com/rajatsangrame
  */
-
 public class RestaurantRepository {
 
     RetrofitApi retrofitApi;

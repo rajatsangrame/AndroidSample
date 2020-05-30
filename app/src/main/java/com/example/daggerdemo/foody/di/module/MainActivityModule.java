@@ -1,11 +1,8 @@
 package com.example.daggerdemo.foody.di.module;
 
 import com.example.daggerdemo.foody.ui.main.MainActivity;
-import com.example.daggerdemo.foody.adapter.RestaurantAdapter;
-import com.example.daggerdemo.foody.di.scope.MainActivityScope;
 
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * Created by Rajat Sangrame on 9/5/20.

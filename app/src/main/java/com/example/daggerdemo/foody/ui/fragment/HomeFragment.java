@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
                 .foodyComponent(FoodyApplication.get(getActivity()).getFoodyComponent())
                 .homeFragmentModule(new HomeFragmentModule(this))
                 .build();
-        component.Fragment(this);
+        component.injectFragment(this);
 
     }
 

@@ -1,10 +1,8 @@
 package com.example.daggerdemo.foody.di.component;
 
 import com.example.daggerdemo.foody.di.module.HomeFragmentModule;
-import com.example.daggerdemo.foody.di.module.MainActivityModule;
 import com.example.daggerdemo.foody.di.scope.MainActivityScope;
 import com.example.daggerdemo.foody.ui.fragment.HomeFragment;
-import com.example.daggerdemo.foody.ui.main.MainActivity;
 
 import dagger.Component;
 
@@ -16,6 +14,6 @@ import dagger.Component;
 @MainActivityScope
 public interface HomeFragmentComponent {
 
-    void Fragment(HomeFragment homeFragment);
+    void injectFragment(HomeFragment homeFragment);
 
 }
