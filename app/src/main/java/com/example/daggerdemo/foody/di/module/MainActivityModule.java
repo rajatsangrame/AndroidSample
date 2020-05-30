@@ -20,10 +20,10 @@ public class MainActivityModule {
         this.mainActivity = mainActivity;
     }
 
-    @Provides
-    @MainActivityScope
-    public RestaurantAdapter getRestaurantAdapter() {
-        return new RestaurantAdapter(mainActivity);
-    }
+//    @Provides
+//    @MainActivityScope
+//    public RestaurantAdapter getRestaurantAdapter() {
+//        return new RestaurantAdapter(mainActivity);
+//    }
 
 }

@@ -16,6 +16,7 @@ import com.example.daggerdemo.foody.di.component.MainActivityComponent;
 import com.example.daggerdemo.foody.di.module.MainActivityModule;
 import com.example.daggerdemo.foody.di.module.RestaurantRepository;
 import com.example.daggerdemo.foody.data.model.RestaurantsItem;
+import com.example.daggerdemo.foody.ui.fragment.HomeFragment;
 import com.example.daggerdemo.foody.util.ViewModelFactory;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Inject
+    //@Inject
     RestaurantAdapter adapter;
     @Inject
     RestaurantRepository restaurantRepository;
@@ -36,14 +37,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MainActivityComponent component = DaggerMainActivityComponent
-                .builder()
-                .foodyComponent(FoodyApplication.get(this).getFoodyComponent())
-                .mainActivityModule(new MainActivityModule(this))
-                .build();
-        component.injectMainActivity(this);
+//        MainActivityComponent component = DaggerMainActivityComponent
+//                .builder()
+//                .foodyComponent(FoodyApplication.get(this).getFoodyComponent())
+//                .mainActivityModule(new MainActivityModule(this))
+//                .build();
+//        component.injectMainActivity(this);
+//
+//        init();
 
-        init();
+        addHomeFragment();
     }
 
     private void init() {
@@ -59,5 +62,15 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setRestaurants(restaurantsItems);
             }
         });
+    }
+
+
+    private void addHomeFragment() {
+        if (getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG) == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container_fragment, HomeFragment.newInstance(), HomeFragment.TAG)
+                    .commit();
+        }
     }
 }

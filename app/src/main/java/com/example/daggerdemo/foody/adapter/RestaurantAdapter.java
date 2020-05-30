@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,12 +22,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
 
     private static final String TAG = "RestaurantAdapter";
     private RestaurantAdapterListener mListener;
-    private final MainActivity mainActivity;
+    private final Fragment mainActivity;
     private List<RestaurantsItem> mRestaurants;
     private boolean mIsSavedFragment = false;
 
 
-    public RestaurantAdapter(MainActivity activity) {
+    public RestaurantAdapter(Fragment activity) {
         this.mainActivity = activity;
     }
 
